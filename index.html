@@ -39,14 +39,9 @@
       var code = document.getElementById('code').value;
       var analysisResult = analyzeJavaScriptCode(code);
 
-      if (analysisResult.errors.length > 0) {
-        var errorReport = '<p class="text-danger"><strong>Error(s) found:</strong></p>';
-        errorReport += '<ul class="list-disc pl-6">';
-        analysisResult.errors.forEach(function (error) {
-          errorReport += '<li><strong>Error:</strong> ' + error.message + '</li>';
-          errorReport += '<li><strong>Line:</strong> ' + error.lineNumber + '</li>';
-        });
-        errorReport += '</ul>';
+      if (analysisResult.error) {
+        var errorReport = '<p class="text-danger"><strong>Error:</strong> ' + analysisResult.error.message + '</p>';
+        errorReport += '<p><strong>Line:</strong> ' + analysisResult.error.lineNumber + '</p>';
         document.getElementById('results').innerHTML = errorReport;
       } else {
         document.getElementById('results').innerHTML = '<p class="text-success">No errors found.</p>';
@@ -54,35 +49,27 @@
     }
 
     function analyzeJavaScriptCode(code) {
-      var analysisResult = {
-        errors: [],
-      };
+      var analysisResult = {};
 
       try {
         // Wrap the code in a function to get detailed error information
         var wrappedCode = '(function() { ' + code + ' \n})();';
         eval(wrappedCode);
       } catch (error) {
-        var stackTraceLines = error.stack.split('\n');
-        stackTraceLines.forEach(function (line) {
-          var errorMatch = line.match(/at line (\d+)/);
-          if (errorMatch && errorMatch.length > 1) {
-            analysisResult.errors.push({
-              message: error.message,
-              lineNumber: errorMatch[1],
-            });
-          }
-        });
+        analysisResult.error = {
+          message: error.message,
+          lineNumber: extractLineNumber(error.stack),
+        };
       }
 
       return analysisResult;
     }
 
     function extractLineNumber(stack) {
-      var regex = /<anonymous>:(\d+)/g;
+      var regex = /<anonymous>:(\d+)/i;
       var match = stack.match(regex);
-      if (match && match.length > 0) {
-        return match[0].split(':')[1];
+      if (match && match.length > 1) {
+        return match[1];
       }
       return 'Unknown';
     }
