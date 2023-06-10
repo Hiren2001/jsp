@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>JavaScript Code Performance - JSP</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <!-- Tailwind CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+  <style>
+    /* Additional custom styles */
+    .container {
+      max-width: 800px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container mt-5">
+    <h1 class="text-center mb-4">JavaScript Code Analyzer</h1>
+
+    <div class="mb-3">
+      <label for="code" class="form-label">Enter your JavaScript code:</label>
+      <textarea id="code" class="form-control" placeholder="Enter your JavaScript code here" rows="8"></textarea>
+    </div>
+
+    <div class="text-center">
+      <button id="analyzeBtn" class="btn btn-primary">Analyze Code</button>
+    </div>
+
+    <h2 class="mt-4">Analysis Results:</h2>
+    <div id="results" class="mt-2"></div>
+  </div>
+
+  <!-- JavaScript libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.js"></script>
+
+  <script>
+    function analyzeCode() {
+      var code = document.getElementById('code').value;
+      var analysisResult = analyzeJavaScriptCode(code);
+
+      if (analysisResult.errors.length > 0) {
+        var errorReport = '<p class="text-danger"><strong>Error(s) found:</strong></p>';
+        errorReport += '<ul class="list-disc pl-6">';
+        analysisResult.errors.forEach(function (error) {
+          errorReport += '<li><strong>Error:</strong> ' + error.message + '</li>';
+          errorReport += '<li><strong>Line:</strong> ' + error.lineNumber + '</li>';
+        });
+        errorReport += '</ul>';
+        document.getElementById('results').innerHTML = errorReport;
+      } else {
+        document.getElementById('results').innerHTML = '<p class="text-success">No errors found.</p>';
+      }
+    }
+
+    function analyzeJavaScriptCode(code) {
+      var analysisResult = {
+        errors: [],
+      };
+
+      try {
+        // Wrap the code in a function to get detailed error information
+        var wrappedCode = '(function() { ' + code + ' \n})();';
+        eval(wrappedCode);
+      } catch (error) {
+        var stackTraceLines = error.stack.split('\n');
+        stackTraceLines.forEach(function (line) {
+          var errorMatch = line.match(/at line (\d+)/);
+          if (errorMatch && errorMatch.length > 1) {
+            analysisResult.errors.push({
+              message: error.message,
+              lineNumber: errorMatch[1],
+            });
+          }
+        });
+      }
+
+      return analysisResult;
+    }
+
+    function extractLineNumber(stack) {
+      var regex = /<anonymous>:(\d+)/g;
+      var match = stack.match(regex);
+      if (match && match.length > 0) {
+        return match[0].split(':')[1];
+      }
+      return 'Unknown';
+    }
+
+    document.getElementById('analyzeBtn').addEventListener('click', analyzeCode);
+  </script>
+
+  <!-- Article -->
+  <div class="container mt-5">
+   
+
+ <h2>JavaScript Code Performance: Streamline Your Code Analysis</h2>
+
+    <p>Introduction:</p>
+    <p>JSP is a powerful JavaScript Code Analyzer tool designed to help developers streamline their code analysis process. With its user-friendly interface and advanced error-catching capabilities, this tool provides a convenient way to identify and debug errors in JavaScript code. Whether you're a seasoned developer or just starting your coding journey, JSP.js.org can be an invaluable asset in ensuring code quality and enhancing overall application performance.</p>
+
+    <p>Using JavaScript Code Performance: A Step-by-Step Guide</p>
+
+    <p>Step 1: Launch the web page</p>
+    <p>Open your preferred web browser and navigate to the web page.</p>
+
+    <p>Step 2: Enter your JavaScript code</p>
+    <p>In the provided textarea, enter or paste your JavaScript code that you want to analyze. This could be a small snippet or an entire script.</p>
+
+    <p>Step 3: Click "Analyze Code"</p>
+    <p>Once you have entered your code, click the "Analyze Code" button. JSP will initiate the analysis process.</p>
+
+    <p>Step 4: Review the analysis results</p>
+    <p>After the analysis is complete, the tool will display the analysis results below. If any errors are found in your code, they will be listed with detailed information, including the error message and the specific line number where the error occurred.</p>
+
+    <p>Step 5: Debug and refine your code</p>
+    <p>Utilize the information provided by JSP to debug and refine your JavaScript code. Identify and resolve the errors highlighted in the analysis results to enhance the functionality and performance of your code.</p>
+
+    <p>JSP offers a seamless and efficient way to analyze JavaScript code, helping you catch errors early in the development process and optimize your code for better performance. By using this tool, you can significantly reduce the time spent on manual debugging and ensure the reliability of your JavaScript applications.</p>
+
+    <p>Note: While JSP provides valuable insights into your JavaScript code, it is important to exercise caution and avoid running untrusted or unknown code through the tool to mitigate potential security risks. Always review and validate the code you analyze with the tool to ensure its integrity.</p>
+
+    <p>In conclusion, JSP - JavaScript Code Performance simplifies the code analysis process, enabling developers to identify and fix errors efficiently. With its intuitive user interface, comprehensive error reporting, and error-catching functionality, JSP.js.org empowers developers to create robust and high-performing JavaScript applications. Take advantage of this powerful tool to enhance your coding workflow and deliver reliable JavaScript code.</p>
+  </div>
+</body>
+</html>
